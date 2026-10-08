@@ -3,7 +3,9 @@
 Watches Target.com plus two Targets near 91722 (West Covina and West Covina South) for every
 30th Celebration product and pushes an alert to your phone the moment one comes into stock.
 
-- **Checks:** about once a minute, from GitHub Actions (free on a public repo).
+- **Checks:** about once a minute, from GitHub Actions (free on a public repo). Each run checks for
+  ~5 minutes and then starts the next run itself, because GitHub skips most frequent scheduled runs.
+  A 10-minute schedule restarts the chain if it breaks. Disable the workflow to stop everything.
 - **Alerts:** [ntfy](https://ntfy.sh) push notifications. Tapping one opens the product page.
 - **Also alerts on:** new 30th Celebration listings appearing on Target (often right before a drop),
   Friday-morning Target vendor reminders, Thursday Walmart reminders, Pokémon Center queue windows

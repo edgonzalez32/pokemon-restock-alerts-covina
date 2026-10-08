@@ -164,7 +164,12 @@ def fetch_target(cfg: dict, store_id: str) -> dict[str, dict]:
         "page": "/p/-",
     }
     url = f"{REDSKY}/product_summary_with_fulfillment_v1?{urllib.parse.urlencode(params)}"
-    return parse_summaries(http_json(url), store_id)
+    try:
+        data = http_json(url)
+    except (urllib.error.URLError, TimeoutError):
+        time.sleep(3)  # one quick retry; Target sometimes refuses a single request
+        data = http_json(url)
+    return parse_summaries(data, store_id)
 
 
 def parse_search(data: dict) -> list[dict]:
