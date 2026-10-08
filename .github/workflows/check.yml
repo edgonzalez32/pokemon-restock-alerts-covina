@@ -68,4 +68,13 @@ jobs:
         if: ${{ !cancelled() }}
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run check.yml --repo "${{ github.repository }}" --ref main
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          # Without an alert topic there's nothing to alert, so don't keep the relay going.
+          [ -n "$NTFY_TOPIC" ] || { echo "NTFY_TOPIC not set; not starting another run."; exit 0; }
+          # GitHub's API sometimes times out; one failed dispatch would end the relay.
+          for wait in 5 15 45 0; do
+            gh workflow run check.yml --repo "${{ github.repository }}" --ref main && exit 0
+            sleep "$wait"
+          done
+          exit 1
