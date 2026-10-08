@@ -1,0 +1,61 @@
+name: Restock check
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # GitHub's fastest schedule; each run checks every minute for ~4 min
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: restock-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load previous state
+        run: |
+          git fetch --depth=1 origin status 2>/dev/null || true
+          git show origin/status:state.json > state.json 2>/dev/null || echo '{}' > state.json
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -q cryptography
+
+      - name: Check Target and send alerts
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          WEBPUSH_SUBSCRIPTIONS: ${{ secrets.WEBPUSH_SUBSCRIPTIONS }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          LOOP_SECONDS: "230"
+          INTERVAL: "60"
+        run: |
+          if [ -z "$NTFY_TOPIC" ]; then
+            # No alert topic yet: do one test pass and throw its memory away,
+            # so the first real run still alerts on anything already in stock.
+            echo "NTFY_TOPIC secret not set; running a single test pass."
+            STATE_PATH=/tmp/dry-state.json LOOP_SECONDS=0 python checker.py
+            rm -f state.json
+          else
+            python checker.py
+          fi
+
+      - name: Save state for the next run and the dashboard
+        if: always()
+        run: |
+          mkdir -p /tmp/status && cp status.json /tmp/status/ 2>/dev/null || true
+          cp state.json /tmp/status/ 2>/dev/null || true
+          cd /tmp/status
+          git init -q -b status
+          git config user.name "restock-bot"
+          git config user.email "restock-bot@users.noreply.github.com"
+          git add -A && git commit -q -m "status $(date -u +%FT%TZ)"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" status

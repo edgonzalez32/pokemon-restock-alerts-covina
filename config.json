@@ -1,0 +1,128 @@
+{
+  "zip": "91722",
+  "state": "CA",
+  "latitude": 34.0995,
+  "longitude": -117.8903,
+  "timezone": "America/Los_Angeles",
+  "target_stores": [
+    {
+      "id": "1028",
+      "name": "Target West Covina",
+      "address": "2831 E Eastland Center Dr"
+    },
+    {
+      "id": "2147",
+      "name": "Target West Covina South",
+      "address": "West Covina, CA 91792"
+    }
+  ],
+  "target_products": [
+    {
+      "tcin": "1010892076",
+      "name": "Elite Trainer Box",
+      "msrp": 49.99
+    },
+    {
+      "tcin": "1011407490",
+      "name": "Booster Bundle",
+      "msrp": 24.99
+    },
+    {
+      "tcin": "1010892068",
+      "name": "Sylveon ex Box",
+      "msrp": 21.99
+    },
+    {
+      "tcin": "1010892065",
+      "name": "Greninja ex Box",
+      "msrp": 21.99
+    },
+    {
+      "tcin": "1010892069",
+      "name": "Tin (Sylveon or Greninja)",
+      "msrp": 21.99
+    },
+    {
+      "tcin": "1012422107",
+      "name": "Mini Tin",
+      "msrp": 9.99
+    },
+    {
+      "tcin": "1010892074",
+      "name": "Binder Collection",
+      "msrp": 31.99
+    },
+    {
+      "tcin": "1010892067",
+      "name": "Poster Collection",
+      "msrp": 14.99
+    },
+    {
+      "tcin": "1010892078",
+      "name": "Tech Sticker Collection",
+      "msrp": 14.99
+    },
+    {
+      "tcin": "1010892070",
+      "name": "Knock Out Collection",
+      "msrp": 9.99
+    },
+    {
+      "tcin": "1010892075",
+      "name": "Battle Deck: Espeon ex",
+      "msrp": 19.99
+    },
+    {
+      "tcin": "1010892071",
+      "name": "Battle Deck: Umbreon ex",
+      "msrp": 19.99
+    }
+  ],
+  "discovery_search": "pokemon 30th celebration",
+  "reminders": [
+    {
+      "id": "target-friday",
+      "days": [
+        "Fri"
+      ],
+      "time": "07:40",
+      "title": "Target vendor morning",
+      "message": "Friday is the usual Target card restock (8-9 AM). Call your West Covina Targets now and ask if the Pokemon vendor came.",
+      "url": "https://www.target.com/store-locator/find-stores/91722"
+    },
+    {
+      "id": "walmart-weekday",
+      "days": [
+        "Thu"
+      ],
+      "time": "07:15",
+      "title": "Walmart vendor window",
+      "message": "Thursday is the most common Walmart card restock (7-10 AM).",
+      "url": "https://www.walmart.com/search?q=pokemon+30th+celebration"
+    },
+    {
+      "id": "pc-queue",
+      "days": [
+        "Mon",
+        "Tue",
+        "Wed"
+      ],
+      "time": "07:50",
+      "title": "Pokemon Center queue window",
+      "message": "Queues usually open Mon-Wed around 8 AM Pacific. Open one tab, don't refresh, VPN off.",
+      "url": "https://www.pokemoncenter.com/category/trading-card-game"
+    }
+  ],
+  "release_days": [
+    {
+      "date": "2026-10-30",
+      "title": "Battle Decks release today",
+      "message": "Check Target and Walmart early, and your local game store."
+    },
+    {
+      "date": "2026-11-06",
+      "title": "Big release today",
+      "message": "Ultra-Premium Collection, Ditto Premium Collection and Figure Collection. Check stores at open."
+    }
+  ]
+}

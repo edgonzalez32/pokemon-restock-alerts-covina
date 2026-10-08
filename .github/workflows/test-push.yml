@@ -1,0 +1,21 @@
+name: Send test alert
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q cryptography
+      - name: Send one alert to ntfy and the Radar app
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          WEBPUSH_SUBSCRIPTIONS: ${{ secrets.WEBPUSH_SUBSCRIPTIONS }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          SEND_TEST_PUSH: "1"
+        run: python checker.py

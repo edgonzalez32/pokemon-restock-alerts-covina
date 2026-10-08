@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Restock Radar</title>
+<meta name="theme-color" content="#141826">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Radar">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one column, live "buy now" strip on top, stock board below, alerts + links last. */
+:root {
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+  --bg: #f3f4f8; --surface: #ffffff; --ink: #141826; --muted: #5d6478; --line: #e1e4ee;
+  --accent: #f2c200; --accent-ink: #1b1600;
+  --go: #0f7a4f; --go-bg: #dcf5e8; --go-strong: #12935f;
+  --off: #8a90a2; --off-bg: #eef0f5;
+  --warn: #9a5b00; --warn-bg: #fff1d6;
+  --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1018; --surface: #161b27; --ink: #e8eaf2; --muted: #9aa1b6; --line: #262d3d;
+  --accent: #ffd43b; --accent-ink: #1b1600;
+  --go: #5fe0a4; --go-bg: #0f3526; --go-strong: #23b877;
+  --off: #8d94a8; --off-bg: #1e2433;
+  --warn: #ffc266; --warn-bg: #3a2908; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0d1018; --surface: #161b27; --ink: #e8eaf2; --muted: #9aa1b6; --line: #262d3d;
+  --accent: #ffd43b; --accent-ink: #1b1600;
+  --go: #5fe0a4; --go-bg: #0f3526; --go-strong: #23b877;
+  --off: #8d94a8; --off-bg: #1e2433;
+  --warn: #ffc266; --warn-bg: #3a2908; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body); margin: 0; }
+.wrap { max-width: 960px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: grid; gap: 28px; }
+h1, h2 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(26px, 5vw, 34px); font-weight: 800; letter-spacing: -.01em; }
+h2 { font-size: 18px; font-weight: 600; }
+.eyebrow { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+header { display: grid; gap: 6px; }
+.pulse { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--off); flex: none; }
+.dot.live { background: var(--go-strong); box-shadow: 0 0 0 0 var(--go-strong); animation: ping 2.4s infinite; }
+.dot.warn { background: var(--warn); }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--go-strong) 60%, transparent); } 80%,100% { box-shadow: 0 0 0 9px transparent; } }
+@media (prefers-reduced-motion: reduce) { .dot.live { animation: none; } }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 12px 14px; font-weight: 500; }
+
+/* Buy-now strip */
+.buy { display: grid; gap: 12px; }
+.buy-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.buy-card { display: grid; gap: 10px; background: var(--go-bg); border: 2px solid var(--go-strong); border-radius: 14px; padding: 14px 16px; min-width: 0; }
+.buy-card b { font-family: var(--display); font-size: 18px; font-weight: 600; }
+.buy-card .where { color: var(--go); font-weight: 600; font-size: 14px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 10px;
+       background: var(--accent); color: var(--accent-ink); font-weight: 600; text-decoration: none; border: 0; font: 600 15px var(--body); cursor: pointer; }
+.btn:focus-visible, a:focus-visible { outline: 3px solid var(--go-strong); outline-offset: 2px; }
+.quiet { background: var(--surface); border: 1px dashed var(--line); border-radius: 14px; padding: 16px; color: var(--muted); }
+
+/* Stock board */
+.board { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th { font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td a { color: var(--ink); font-weight: 600; text-decoration: none; }
+td a:hover { text-decoration: underline; }
+.msrp { color: var(--muted); font: 500 12px var(--mono); margin-left: 6px; }
+.pill { display: inline-block; padding: 3px 9px; border-radius: 999px; font: 600 12px var(--body); white-space: nowrap; }
+.pill.in { background: var(--go-bg); color: var(--go); }
+.pill.out { background: var(--off-bg); color: var(--off); }
+tr.hot td:first-child { box-shadow: inset 4px 0 0 var(--go-strong); }
+
+/* Alerts + links */
+.two { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; align-items: start; }
+.two > section { display: grid; gap: 12px; min-width: 0; }
+.feed { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+.feed li { display: grid; grid-template-columns: 110px 1fr; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.feed li:last-child { border-bottom: 0; }
+.feed time { color: var(--muted); font: 500 12px var(--mono); padding-top: 2px; }
+.feed a { color: var(--ink); }
+.links { display: grid; gap: 8px; }
+.links a { display: grid; gap: 2px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; color: var(--ink); text-decoration: none; }
+.links a:hover { border-color: var(--accent); }
+.links span { color: var(--muted); font-size: 13px; }
+
+@media (max-width: 700px) {
+  .two { grid-template-columns: 1fr; }
+  thead { display: none; }
+  .board { overflow: visible; }
+  table, tbody { display: block; }
+  tr { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  tr:last-child { border-bottom: 0; }
+  td { border: 0; padding: 0; }
+  td:first-child { grid-column: 1 / -1; }
+  tr.hot { box-shadow: inset 4px 0 0 var(--go-strong); }
+  tr.hot td:first-child { box-shadow: none; }
+  td[data-label]::before { content: attr(data-label); display: block; font: 500 10px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+}
+
+.setup { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+.setup p { margin: 0; color: var(--muted); }
+.setup ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.setup textarea { width: 100%; min-height: 96px; font: 12px/1.4 var(--mono); padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); resize: vertical; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.ok { color: var(--go); font-weight: 600; }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Pokémon TCG · 30th Celebration · 19128</div>
+    <h1>Restock Radar</h1>
+    <div class="pulse"><span class="dot" id="dot"></span><span id="pulse">Connecting to your checker…</span></div>
+  </header>
+
+  <div class="notice" id="notice" hidden></div>
+
+  <section class="setup" id="setup" aria-labelledby="setup-h">
+    <h2 id="setup-h">Alerts on this phone</h2>
+    <div id="setup-body"></div>
+  </section>
+
+
+  <section class="buy" aria-labelledby="buy-h">
+    <h2 id="buy-h">Buy now</h2>
+    <div class="buy-list" id="buy"><div class="quiet">Nothing in stock right now. When something drops it shows up here with a button straight to the product page, and your phone buzzes.</div></div>
+  </section>
+
+  <section class="buy" aria-labelledby="board-h">
+    <h2 id="board-h">Target stock</h2>
+    <div class="board"><table>
+      <thead><tr><th>Product</th><th>Target.com</th><th id="s1">West Covina</th><th id="s2">West Covina South</th></tr></thead>
+      <tbody id="rows"><tr><td colspan="4" style="color:var(--muted)">Waiting for the first check…</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <div class="two">
+    <section aria-labelledby="feed-h">
+      <h2 id="feed-h">Recent alerts</h2>
+      <ul class="feed" id="feed"><li><time>—</time><span style="color:var(--muted)">No alerts yet.</span></li></ul>
+    </section>
+    <section aria-labelledby="links-h">
+      <h2 id="links-h">Other stores</h2>
+      <div class="links">
+        <a href="https://www.pokemoncenter.com/category/trading-card-game"><b>Pokémon Center</b><span>Queues usually Mon–Wed around 8 AM Pacific</span></a>
+        <a href="https://www.walmart.com/shop/collectibles/draw"><b>Walmart drawings</b><span>Enter during the posted window</span></a>
+        <a href="https://www.target.com/s?searchTerm=pokemon+30th+celebration"><b>Target search</b><span>Online drops often midnight–3 AM Pacific</span></a>
+        <a href="https://www.bestbuy.com/site/searchpage.jsp?st=pokemon+30th+celebration"><b>Best Buy</b><span>Rarely at MSRP</span></a>
+        <a href="https://www.gamestop.com/search/?q=pokemon+30th+celebration"><b>GameStop</b><span>In-store stock is separate from online</span></a>
+        <a href="https://www.trackalacker.com/"><b>TrackaLacker</b><span>Backup alerts for other retailers</span></a>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+const VAPID_PUBLIC_KEY = "BDlMfVm8Oj28vNNJLay_4KBb1lXYlY37iQUNUNnYZxVw4pTkprviorJ7gEoAFEU4JChll-VSzsLKwjK9-CqN26o";
+const REPO_URL = "https://github.com/edgonzalez32/pokemon-restock-alerts-covina";
+const STATUS_URL = "https://raw.githubusercontent.com/edgonzalez32/pokemon-restock-alerts-covina/status/status.json";
+const AVAIL = new Set(["IN_STOCK", "LIMITED_STOCK", "PRE_ORDER_SELLABLE", "AVAILABLE"]);
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const short = n => String(n || "").replace(/^Target /, "");
+let last = null;
+
+function ago(iso) {
+  if (!iso) return "never";
+  const m = Math.round((Date.now() - new Date(iso)) / 60000);
+  return m < 1 ? "just now" : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`;
+}
+const when = iso => new Date(iso).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+
+function pill(status, qty) {
+  if (!status) return `<span class="pill out">—</span>`;
+  if (AVAIL.has(status)) {
+    const label = status === "PRE_ORDER_SELLABLE" ? "Pre-order" : qty ? `In stock · ${qty}` : "In stock";
+    return `<span class="pill in">${label}</span>`;
+  }
+  return `<span class="pill out">Out</span>`;
+}
+
+function render(s) {
+  last = s;
+  const stale = !s.last_check || Date.now() - new Date(s.last_check) > 30 * 60000;
+  $("dot").className = "dot " + (s.failing || stale ? "warn" : "live");
+  $("pulse").innerHTML = s.failing
+    ? `Target checks are failing. Last success ${esc(ago(s.last_ok))}. Keep TrackaLacker on until this clears.`
+    : stale ? `Last check ${esc(ago(s.last_check))}. GitHub may be delaying runs.`
+    : `Watching live · last check <span class="mono">${esc(ago(s.last_check))}</span> · <span class="mono">${s.checks_today ?? 0}</span> checks today`;
+
+  const stores = s.stores || [];
+  const [a, b] = stores;
+  if (a) $("s1").textContent = short(a.name);
+  if (b) $("s2").textContent = short(b.name);
+
+  const hits = [];
+  const items = (s.items || []).map(it => {
+    const url = `https://www.target.com/p/-/A-${it.tcin}`;
+    const where = [];
+    if (AVAIL.has(it.online)) where.push(it.online === "PRE_ORDER_SELLABLE" ? "Pre-order on Target.com" : "Target.com");
+    for (const st of stores) {
+      const x = (it.stores || {})[st.name];
+      if (x && AVAIL.has(x.status)) where.push(`${short(st.name)}${x.qty ? ` (${x.qty})` : ""}`);
+    }
+    if (where.length) hits.push({ ...it, url, where });
+    return { ...it, url, hot: where.length > 0 };
+  }).sort((x, y) => y.hot - x.hot);
+
+  $("buy").innerHTML = hits.length ? hits.map(h => `
+    <div class="buy-card">
+      <div><b>${esc(h.name)}</b> <span class="msrp">$${Number(h.msrp).toFixed(2)}</span></div>
+      <div class="where">${esc(h.where.join(" · "))}</div>
+      <a class="btn" href="${esc(h.url)}" target="_blank" rel="noopener">Open on Target →</a>
+    </div>`).join("")
+    : `<div class="quiet">Nothing in stock right now. When something drops it shows up here with a button straight to the product page, and your phone buzzes.</div>`;
+
+  $("rows").innerHTML = items.map(it => {
+    const x = (it.stores || {})[a?.name] || {}, y = (it.stores || {})[b?.name] || {};
+    return `<tr class="${it.hot ? "hot" : ""}">
+      <td><a href="${esc(it.url)}" target="_blank" rel="noopener">${esc(it.name)}</a><span class="msrp">$${Number(it.msrp).toFixed(2)}</span></td>
+      <td data-label="Target.com">${pill(it.online)}</td>
+      <td data-label="${esc(short(a?.name))}">${pill(x.status, x.qty)}</td>
+      <td data-label="${esc(short(b?.name))}">${pill(y.status, y.qty)}</td></tr>`;
+  }).join("");
+
+  const ev = s.events || [];
+  $("feed").innerHTML = ev.length ? ev.slice(0, 20).map(e =>
+    `<li><time>${esc(when(e.at))}</time><span>${e.url ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.text)}</a>` : esc(e.text)}</span></li>`).join("")
+    : `<li><time>—</time><span style="color:var(--muted)">No alerts yet. Restocks, new listings and reminders land here.</span></li>`;
+}
+
+function notice(msg) { $("notice").textContent = msg || ""; $("notice").hidden = !msg; }
+
+async function load() {
+  try {
+    const r = await fetch(`${STATUS_URL}?t=${Date.now()}`, { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    render(await r.json());
+    notice("");
+  } catch {
+    if (!last) notice("Couldn't load stock yet. The checker may not have finished its first run. Retrying every minute.");
+  }
+}
+
+// ---- Alerts on this phone ------------------------------------------------
+
+const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+const pushable = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+
+function b64ToBytes(b64) {
+  const s = atob((b64 + "=".repeat((4 - b64.length % 4) % 4)).replace(/-/g, "+").replace(/_/g, "/"));
+  return Uint8Array.from(s, c => c.charCodeAt(0));
+}
+
+function showSubscription(sub, fresh) {
+  const json = JSON.stringify(sub);
+  $("setup-body").innerHTML = `
+    <p>${fresh ? '<span class="ok">Alerts are on for this phone.</span> One last step:' : '<span class="ok">This phone is subscribed.</span> If alerts aren’t arriving, re-check this step:'}
+      copy the code below and save it in your repo as a secret named <b>WEBPUSH_SUBSCRIPTIONS</b>.</p>
+    <textarea id="sub-json" readonly aria-label="Subscription code">${esc(json)}</textarea>
+    <div class="row">
+      <button class="btn" id="copy">Copy code</button>
+      <a class="btn ghost" href="${REPO_URL}/settings/secrets/actions" target="_blank" rel="noopener">Open repo secrets</a>
+    </div>
+    <p>Then run the <a href="${REPO_URL}/actions/workflows/test-push.yml" target="_blank" rel="noopener">Send test alert</a> workflow to see one arrive.</p>`;
+  $("copy").onclick = async () => {
+    try { await navigator.clipboard.writeText(json); $("copy").textContent = "Copied"; }
+    catch { $("sub-json").select(); $("copy").textContent = "Selected, tap Copy"; }
+  };
+}
+
+async function setupAlerts() {
+  const body = $("setup-body");
+  if (!standalone && /iPhone|iPad/.test(navigator.userAgent)) {
+    body.innerHTML = `<p>To get alerts from this app, install it first:</p>
+      <ol><li>Tap the Share button in Safari.</li><li>Tap <b>Add to Home Screen</b>, then <b>Add</b>.</li>
+      <li>Open <b>Radar</b> from your home screen and come back to this section.</li></ol>`;
+    return;
+  }
+  if (!pushable) {
+    body.innerHTML = `<p>This browser can't receive app alerts. On iPhone you need iOS 16.4 or newer, and the app opened from your home screen. Your ntfy alerts keep working either way.</p>`;
+    return;
+  }
+  const reg = await navigator.serviceWorker.register("sw.js");
+  const existing = await reg.pushManager.getSubscription();
+  if (existing) {
+    body.innerHTML = `<p><span class="ok">Alerts are on for this phone.</span> <button class="btn ghost" id="show-code" style="min-height:36px;padding:0 12px">Show setup code</button></p>`;
+    $("show-code").onclick = () => showSubscription(existing, false);
+    return;
+  }
+  body.innerHTML = `<p>Get a notification on this phone the moment something comes into stock. Tapping it opens the product page.</p>
+    <div class="row"><button class="btn" id="enable">Turn on alerts</button></div>`;
+  $("enable").onclick = async () => {
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted") {
+      body.innerHTML = `<p>Notifications are blocked for Radar. Turn them on in iPhone Settings → Notifications → Radar, then reopen the app.</p>`;
+      return;
+    }
+    try {
+      const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(VAPID_PUBLIC_KEY) });
+      showSubscription(sub, true);
+    } catch (e) {
+      body.innerHTML = `<p>Couldn't turn on alerts: ${esc(e.message)}. Close the app fully and try again.</p>`;
+    }
+  };
+}
+
+load();
+setInterval(load, 60000);
+setInterval(() => { if (last) render(last); }, 30000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
+setupAlerts().catch(e => { $("setup-body").innerHTML = `<p>Alerts setup failed: ${esc(e.message)}</p>`; });
+</script>
+</body>
+</html>
