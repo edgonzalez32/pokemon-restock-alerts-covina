@@ -37,6 +37,7 @@ AVAILABLE = {"IN_STOCK", "LIMITED_STOCK", "PRE_ORDER_SELLABLE", "AVAILABLE"}
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/129.0 Safari/537.36")
 MAX_EVENTS = 60
+OUTAGE_PASSES = 30
 DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 
@@ -331,16 +332,24 @@ class Checker:
         if ct["date"] != today:
             ct.update(date=today, count=0)
         if ok_calls:
-            if st["failures"] >= 10:
+            if st.get("outage_alerted"):
                 self.n.send("Restock checker is back", "Target checks are working again.", priority=2)
+                self.log("error", "Target checks working again")
+            st["outage_alerted"] = False
             st["failures"] = 0
             ct["count"] += 1
             st["last_ok"] = now.isoformat(timespec="seconds")
         else:
             st["failures"] += 1
-            if st["failures"] == 10:
+            # Target refuses some cloud servers off and on, so only warn about a
+            # real outage (about 30 minutes of failures), and at most every 6 hours.
+            last = st.get("last_outage_alert")
+            quiet = last and now - datetime.fromisoformat(last) < timedelta(hours=6)
+            if st["failures"] >= OUTAGE_PASSES and not st.get("outage_alerted") and not quiet:
+                st["outage_alerted"] = True
+                st["last_outage_alert"] = now.isoformat(timespec="seconds")
                 self.n.send("Restock checker can't reach Target",
-                            "Target checks have failed 10 times in a row. Don't rely on silence "
+                            "Target has refused checks for about 30 minutes. Don't rely on silence "
                             "until you get the all-clear; keep TrackaLacker alerts on.",
                             priority=4, tags=["warning"])
                 self.log("error", "Target checks failing")

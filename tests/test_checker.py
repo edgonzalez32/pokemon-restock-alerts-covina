@@ -103,15 +103,33 @@ class Tests(unittest.TestCase):
         c.run_pass()
         self.assertEqual(len(n.sent), 1)
 
-    def test_failure_alert_after_ten(self):
-        c, fake, n, _ = make()
+    def test_outage_alert_once_after_thirty(self):
+        c, fake, n, clock = make()
         fake.fail = True
-        for _ in range(12):
+        for _ in range(29):
+            c.run_pass()
+        self.assertEqual(n.sent, [])
+        for _ in range(20):
             c.run_pass()
         self.assertEqual([s["title"] for s in n.sent], ["Restock checker can't reach Target"])
         fake.fail = False
         c.run_pass()
         self.assertEqual(n.sent[-1]["title"], "Restock checker is back")
+        # flapping within 6 hours stays quiet
+        fake.fail = True
+        for _ in range(40):
+            c.run_pass()
+        self.assertEqual(len(n.sent), 2)
+
+    def test_brief_failures_are_silent(self):
+        c, fake, n, _ = make()
+        for _ in range(5):
+            fake.fail = True
+            for _ in range(12):
+                c.run_pass()
+            fake.fail = False
+            c.run_pass()
+        self.assertEqual(n.sent, [])
 
     def test_status_file(self):
         c, fake, n, _ = make()
