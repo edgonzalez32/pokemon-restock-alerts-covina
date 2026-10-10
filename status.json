@@ -1,0 +1,81 @@
+{
+ "last_check": "2026-10-10T16:48:04-07:00",
+ "last_ok": null,
+ "failing": false,
+ "checks_today": 0,
+ "stores": [
+  {
+   "id": "1028",
+   "name": "Target West Covina",
+   "address": "2831 E Eastland Center Dr"
+  },
+  {
+   "id": "2147",
+   "name": "Target West Covina South",
+   "address": "West Covina, CA 91792"
+  }
+ ],
+ "items": [
+  {
+   "tcin": "1010892076",
+   "msrp": 49.99,
+   "name": "Elite Trainer Box"
+  },
+  {
+   "tcin": "1011407490",
+   "msrp": 24.99,
+   "name": "Booster Bundle"
+  },
+  {
+   "tcin": "1010892068",
+   "msrp": 21.99,
+   "name": "Sylveon ex Box"
+  },
+  {
+   "tcin": "1010892065",
+   "msrp": 21.99,
+   "name": "Greninja ex Box"
+  },
+  {
+   "tcin": "1010892069",
+   "msrp": 21.99,
+   "name": "Tin (Sylveon or Greninja)"
+  },
+  {
+   "tcin": "1012422107",
+   "msrp": 9.99,
+   "name": "Mini Tin"
+  },
+  {
+   "tcin": "1010892074",
+   "msrp": 31.99,
+   "name": "Binder Collection"
+  },
+  {
+   "tcin": "1010892067",
+   "msrp": 14.99,
+   "name": "Poster Collection"
+  },
+  {
+   "tcin": "1010892078",
+   "msrp": 14.99,
+   "name": "Tech Sticker Collection"
+  },
+  {
+   "tcin": "1010892070",
+   "msrp": 9.99,
+   "name": "Knock Out Collection"
+  },
+  {
+   "tcin": "1010892075",
+   "msrp": 19.99,
+   "name": "Battle Deck: Espeon ex"
+  },
+  {
+   "tcin": "1010892071",
+   "msrp": 19.99,
+   "name": "Battle Deck: Umbreon ex"
+  }
+ ],
+ "events": []
+}
