@@ -1,0 +1,237 @@
+{
+ "last_check": "2026-10-17T10:57:19-07:00",
+ "last_ok": "2026-10-17T10:57:19-07:00",
+ "failing": false,
+ "checks_today": 1,
+ "stores": [
+  {
+   "id": "1028",
+   "name": "Target West Covina",
+   "address": "2831 E Eastland Center Dr"
+  },
+  {
+   "id": "2147",
+   "name": "Target West Covina South",
+   "address": "West Covina, CA 91792"
+  }
+ ],
+ "items": [
+  {
+   "tcin": "1010892076",
+   "msrp": 49.99,
+   "name": "Elite Trainer Box",
+   "stores": {
+    "Target West Covina": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    },
+    "Target West Covina South": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    }
+   },
+   "url": "https://www.target.com/p/-/A-1010892076",
+   "checked": "2026-10-17T10:57:19-07:00",
+   "online": "OUT_OF_STOCK"
+  },
+  {
+   "tcin": "1011407490",
+   "msrp": 24.99,
+   "name": "Booster Bundle",
+   "stores": {
+    "Target West Covina": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    },
+    "Target West Covina South": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    }
+   },
+   "url": "https://www.target.com/p/-/A-1011407490",
+   "checked": "2026-10-17T10:57:19-07:00",
+   "online": "OUT_OF_STOCK"
+  },
+  {
+   "tcin": "1010892068",
+   "msrp": 21.99,
+   "name": "Sylveon ex Box",
+   "stores": {
+    "Target West Covina": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    },
+    "Target West Covina South": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    }
+   },
+   "url": "https://www.target.com/p/-/A-1010892068",
+   "checked": "2026-10-17T10:57:19-07:00",
+   "online": "OUT_OF_STOCK"
+  },
+  {
+   "tcin": "1010892065",
+   "msrp": 21.99,
+   "name": "Greninja ex Box",
+   "stores": {
+    "Target West Covina": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    },
+    "Target West Covina South": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    }
+   },
+   "url": "https://www.target.com/p/-/A-1010892065",
+   "checked": "2026-10-17T10:57:19-07:00",
+   "online": "OUT_OF_STOCK"
+  },
+  {
+   "tcin": "1010892069",
+   "msrp": 21.99,
+   "name": "Tin (Sylveon or Greninja)",
+   "stores": {
+    "Target West Covina": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    },
+    "Target West Covina South": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    }
+   },
+   "url": "https://www.target.com/p/-/A-1010892069",
+   "checked": "2026-10-17T10:57:19-07:00",
+   "online": "OUT_OF_STOCK"
+  },
+  {
+   "tcin": "1012422107",
+   "msrp": 9.99,
+   "name": "Mini Tin",
+   "stores": {
+    "Target West Covina": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    },
+    "Target West Covina South": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    }
+   },
+   "url": "https://www.target.com/p/-/A-1012422107",
+   "checked": "2026-10-17T10:57:19-07:00",
+   "online": "OUT_OF_STOCK"
+  },
+  {
+   "tcin": "1010892074",
+   "msrp": 31.99,
+   "name": "Binder Collection",
+   "stores": {
+    "Target West Covina": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    },
+    "Target West Covina South": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    }
+   },
+   "url": "https://www.target.com/p/-/A-1010892074",
+   "checked": "2026-10-17T10:57:19-07:00",
+   "online": "OUT_OF_STOCK"
+  },
+  {
+   "tcin": "1010892067",
+   "msrp": 14.99,
+   "name": "Poster Collection",
+   "stores": {
+    "Target West Covina": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    },
+    "Target West Covina South": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    }
+   },
+   "url": "https://www.target.com/p/-/A-1010892067",
+   "checked": "2026-10-17T10:57:19-07:00",
+   "online": "OUT_OF_STOCK"
+  },
+  {
+   "tcin": "1010892078",
+   "msrp": 14.99,
+   "name": "Tech Sticker Collection",
+   "stores": {
+    "Target West Covina": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    },
+    "Target West Covina South": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    }
+   },
+   "url": "https://www.target.com/p/-/A-1010892078",
+   "checked": "2026-10-17T10:57:19-07:00",
+   "online": "OUT_OF_STOCK"
+  },
+  {
+   "tcin": "1010892070",
+   "msrp": 9.99,
+   "name": "Knock Out Collection",
+   "stores": {
+    "Target West Covina": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    },
+    "Target West Covina South": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    }
+   },
+   "url": "https://www.target.com/p/-/A-1010892070",
+   "checked": "2026-10-17T10:57:19-07:00",
+   "online": "OUT_OF_STOCK"
+  },
+  {
+   "tcin": "1010892075",
+   "msrp": 19.99,
+   "name": "Battle Deck: Espeon ex",
+   "stores": {
+    "Target West Covina": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    },
+    "Target West Covina South": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    }
+   },
+   "url": "https://www.target.com/p/-/A-1010892075",
+   "checked": "2026-10-17T10:57:19-07:00",
+   "online": "OUT_OF_STOCK"
+  },
+  {
+   "tcin": "1010892071",
+   "msrp": 19.99,
+   "name": "Battle Deck: Umbreon ex",
+   "stores": {
+    "Target West Covina": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    },
+    "Target West Covina South": {
+     "status": "UNAVAILABLE",
+     "qty": 0
+    }
+   },
+   "url": "https://www.target.com/p/-/A-1010892071",
+   "checked": "2026-10-17T10:57:19-07:00",
+   "online": "OUT_OF_STOCK"
+  }
+ ],
+ "events": []
+}
