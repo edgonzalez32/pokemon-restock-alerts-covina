@@ -1,11 +1,8 @@
 name: Restock check
 
-# GitHub often skips frequent scheduled runs, so each run starts the next one
-# itself when it finishes (a relay). The schedule is only a backstop that
-# restarts the relay if it ever breaks. Disable this workflow to stop it.
+# Turned off 2026-10-20: no schedule and no relay, so it only runs if started
+# by hand (one pass). Revert the commit that added this note to turn it back on.
 on:
-  schedule:
-    - cron: "*/10 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -63,18 +60,3 @@ jobs:
           git config user.email "restock-bot@users.noreply.github.com"
           git add -A && git commit -q -m "status $(date -u +%FT%TZ)"
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" status
-
-      - name: Start the next run
-        if: ${{ !cancelled() }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-        run: |
-          # Without an alert topic there's nothing to alert, so don't keep the relay going.
-          [ -n "$NTFY_TOPIC" ] || { echo "NTFY_TOPIC not set; not starting another run."; exit 0; }
-          # GitHub's API sometimes times out; one failed dispatch would end the relay.
-          for wait in 5 15 45 0; do
-            gh workflow run check.yml --repo "${{ github.repository }}" --ref main && exit 0
-            sleep "$wait"
-          done
-          exit 1
